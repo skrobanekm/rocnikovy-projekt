@@ -1,19 +1,46 @@
-
 #include <Arduino.h>
+#include <SoftwareSerial.h>
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
 #include <Adafruit_SPIDevice.h>
 
 #define SERVOMIN 125
 #define SERVOMAX 575
+int stage = 2;
 
-Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+ int values [2] [12] = {
+  {90,90,90,90,90,90,50,50,50,50,50,50},
+ {90,90,90,90,90,90,50,100,50,100,50,100},
+// {90,50,90,90,140,90,30,40,40,40,40,30},
+  //{90,90,90,90,50,90,90,40,40,40,40,150},
+   //{90,140,90,90,50,90,40,40,40,40,40,40},
 
-void setup() {
-  Serial.begin(9600);
-  pwm.begin();
-  pwm.setPWMFreq(60);
-}
+// 0   1  2  3   4  5 | 6   7  8  9  10 11 
+
+/*
+   {0,130},  
+   {2,130},
+   {4,80}, 
+   {3,130},  
+   {5,130},
+   {1,80},
+
+    {6,60},
+  {8,60},  
+  {10,60},
+  {7,100},
+  {9,100},  
+  {11,100},
+
+   {0,80},
+  {2,80},
+  {4,130},
+  {3,80},
+  {5,80},
+  {1,130}
+*/
+ };
+
 
 /*
 test všech serv.
@@ -34,12 +61,6 @@ void loop() {
   }
   delay(1000);
 }*/
-
-
-void setServoAngle(uint8_t servoNum, int angle) {
-  int pulse = map(angle, 0, 180, SERVOMIN, SERVOMAX);
-  pwm.setPWM(servoNum, 0, pulse);
-}
 
 
 /*
@@ -64,20 +85,52 @@ void loop() {
   delay(100);
 }*/
 
-void loop() {
-  /*setServoAngle(0, 100);   
-  setServoAngle(1, 100);            
-  setServoAngle(2, 100);  
-  setServoAngle(3, 100);   
-  setServoAngle(4, 100);   
-  setServoAngle(5, 100);  
-  setServoAngle(6, 60);  
-  setServoAngle(7, 60);   
-  setServoAngle(8, 60);  
-  setServoAngle(9, 60);   
-  setServoAngle(10, 60);  
-  setServoAngle(11, 60);
-  delay(1000); */ 
+
+
+SoftwareSerial BTserial(2, 3); // RX | TX
+Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+int data = 0;
+
+
+
+
+void setServoAngle(uint8_t servoNum, int angle) {
+  int pulse = map(angle, 0, 180, SERVOMIN, SERVOMAX);
+  pwm.setPWM(servoNum, 0, pulse);
+}
+
+
+void setup()
+{
+  Serial.begin(38400);
+  BTserial.begin(38400);
+  pwm.begin();
+  pwm.setPWMFreq(60);     
+
+  data = 0;
+
+}
+ 
+void loop()
+{
+   if(BTserial.available() > 0) {
+    //int read = BTserial.read();
+  //  data = read - 48;
+    // Serial.println(data,DEC);
+  
+
+}
+/*
+ for (byte i = 0; i < 12;i++) {
+ // setServoAngle(i,values[data][i]);
+ Serial.println(data);
+ }
+
+ delay(1000);
+ data++;
+ if(data > 1) data = 0;
+ */
+
   setServoAngle(6,100);
   setServoAngle(8,100);  
   setServoAngle(10,100);
@@ -109,9 +162,9 @@ void loop() {
   delay(1000);
 
 
-  
-}
 
+
+}
 
 
 
