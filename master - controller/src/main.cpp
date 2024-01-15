@@ -1,4 +1,3 @@
-
 //master code
 #include <Arduino.h>
 #include <SoftwareSerial.h>
@@ -15,13 +14,17 @@ void setup()
 
 void loop()
 {
-   int readAnalong = analogRead(buttons);
-data = map(readAnalong,200,1024,0,5);
+int readAnalog = analogRead(buttons);
+if(readAnalog < 150) data = 0;
+else data = map(readAnalog,0,1024,1,6);
 if(data > -1) {
-//BTSerial.println(data);
+BTSerial.println(data);
 }
     delay(10);
 }
+
+
+
 
 
 
